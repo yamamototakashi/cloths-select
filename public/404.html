@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Closet Weather</title>
+    <script>
+      // GitHub Pages のサブパス配信で深いURLに直接アクセスされた場合、
+      // HashRouter にリダイレクトする。
+      (function () {
+        var segs = location.pathname.split('/').filter(Boolean);
+        var base = segs.length > 0 ? '/' + segs[0] + '/' : '/';
+        location.replace(base + '#/');
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>JavaScript を有効にしてください。</noscript>
+  </body>
+</html>

@@ -40,6 +40,56 @@ npm run preview
 Service Worker が登録されることを確認してください。
 Chrome DevTools の Application → Manifest / Service Workers タブで PWA 状態を確認できます。
 
+## GitHub Pages で公開（Actions を使わない手動デプロイ）
+
+このリポジトリは `vite.config.ts` の `base` をデフォルトで `/cloths-select/` に設定済みです。
+`main` ブランチとは別に、ビルド成果物だけを `gh-pages` ブランチへ push する仕組みで公開します。
+
+### 1回目だけの準備
+
+GitHub の対象リポジトリで次を行います。
+
+- Settings → Pages
+  - Source: **Deploy from a branch**
+  - Branch: **`gh-pages`** / **`/ (root)`**
+  - Save
+
+（`gh-pages` ブランチは次のコマンドが自動で作ります。）
+
+### デプロイ手順（毎回）
+
+```bash
+npm install              # 初回のみ
+npm run deploy
+```
+
+`npm run deploy` は以下を順に実行します。
+
+1. `npm run build`（型チェック + Vite ビルド）
+2. `gh-pages -d dist -t true`（`dist/` の内容を `gh-pages` ブランチへ push。`-t true` で `.nojekyll` 等のドットファイルも含める）
+
+デプロイが完了すると、数十秒〜数分後に以下のURLで確認できます。
+
+```
+https://<あなたのGitHubユーザー名>.github.io/cloths-select/
+```
+
+### 補足
+
+- `public/.nojekyll` を同梱しているため、GitHub Pages の Jekyll 変換で `_` 始まりのファイルが無視される問題は起きません。
+- `public/404.html` を同梱しており、直接ディープリンクされた場合も HashRouter に復帰します（本アプリはもともと HashRouter なので通常は不要ですが、念のため）。
+- リポジトリ名を変える場合は `vite.config.ts` の `BASE_PATH` を合わせて変更してください。
+  ```ts
+  const BASE_PATH = process.env.BASE_PATH ?? '/your-repo-name/';
+  ```
+- カスタムドメイン（CNAME）で配信する場合は、`BASE_PATH` 環境変数で `/` に切り替えてビルドしてください。
+
+  ```bash
+  BASE_PATH=/ npm run deploy
+  ```
+
+  さらに `public/CNAME` にドメインを書いて同梱します。
+
 ## PWA として確認
 
 1. `npm run build && npm run preview`

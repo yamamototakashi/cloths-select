@@ -3,7 +3,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// GitHub Pages で公開する場合のサブパス。
+// 環境変数 BASE_PATH で上書き可能（例: カスタムドメインなら "/"）。
+const BASE_PATH = process.env.BASE_PATH ?? '/cloths-select/';
+
 export default defineConfig({
+  base: BASE_PATH,
   plugins: [
     react(),
     VitePWA({
@@ -18,8 +23,8 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait',
         lang: 'ja',
-        start_url: '.',
-        scope: '.',
+        start_url: BASE_PATH,
+        scope: BASE_PATH,
         icons: [
           { src: 'icons/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
           { src: 'icons/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
@@ -27,6 +32,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        navigateFallback: `${BASE_PATH}index.html`,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.open-meteo\.com\//,
